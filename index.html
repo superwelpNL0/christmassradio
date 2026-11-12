@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Gezellig bij de haard · Kerstcountdown</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0e0504">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Figtree:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --goud: #f0bd5a; --creme: #f8eed8; --amber: #ffbf5a;
+    --serif: "Cormorant Garamond", "Palatino Linotype", Georgia, serif;
+    --sans: "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    --f: .8; /* vlamintensiteit (0-1), wordt elk frame door JS bijgewerkt */
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; overflow: hidden; background: #0e0504; }
+  body {
+    height: 100dvh; color: var(--creme); font-family: var(--sans); position: relative;
+    padding: max(1vh, env(safe-area-inset-top)) max(2.5vw, env(safe-area-inset-right))
+             max(1vh, env(safe-area-inset-bottom)) max(2.5vw, env(safe-area-inset-left));
+    display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: clamp(.3rem, 1.4vh, 1rem);
+  }
+  [hidden] { display: none !important; }
+  /* Warme gloed op de muur en vloer, flikkert mee met het vuur */
+  .gloed { position: fixed; inset: 0; z-index: -2; pointer-events: none; opacity: var(--f);
+    background: radial-gradient(ellipse 65% 60% at 50% 82%, rgba(255,120,30,.5), transparent 70%),
+                radial-gradient(ellipse 90% 25% at 50% 100%, rgba(255,90,20,.45), transparent 80%); }
+  #sneeuw { position: fixed; inset: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; }
+
+  /* ---------- Countdown ---------- */
+  .teller { text-align: center; }
+  .teller h1 { font: italic 500 clamp(1rem, 2.8vh + .5vw, 1.9rem)/1.1 var(--serif); color: var(--goud); }
+  .tegels { display: flex; justify-content: center; gap: clamp(.4rem, 1.6vw, 1.1rem); margin-top: .3rem; }
+  .tegel { min-width: clamp(3.8rem, 11vh + 4vw, 8rem); padding: .25rem .4rem; border-radius: .6rem;
+    background: rgba(20,8,5,.55); border: 1px solid rgba(240,189,90,.35); }
+  .getal { display: block; font: 600 clamp(1.7rem, 6.5vh + .6vw, 4rem)/1 var(--serif);
+    font-variant-numeric: lining-nums tabular-nums; text-shadow: 0 0 18px rgba(255,140,50,.6); }
+  .eenheid { display: block; font-size: clamp(.6rem, 1.4vh + .2vw, .85rem); color: var(--goud); }
+  .feest { font: italic 600 clamp(2rem, 9vh + 2vw, 5rem)/1.1 var(--serif); text-shadow: 0 0 30px rgba(255,140,50,.8); animation: gloei 2.4s ease-in-out infinite alternate; }
+  @keyframes gloei { to { text-shadow: 0 0 50px rgba(255,190,80,1); } }
+
+  /* ---------- Haard ---------- */
+  .podium { container-type: size; min-height: 0; display: grid; place-items: center; }
+  .scene { position: relative; width: min(100cqw, 125cqh); aspect-ratio: 5 / 4; }
+  .scene svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  /* Het canvas ligt precies op de haardopening (x150-350, y175-400 van de 500x400 SVG) */
+  #vuur { position: absolute; left: 30%; top: 43.75%; width: 40%; height: 56.25%;
+    filter: blur(1.3px) saturate(1.25) drop-shadow(0 0 10px rgba(255,120,30,.7)); }
+  .licht { opacity: var(--f); }
+  .kaars { transform-origin: 50% 100%; animation: flam .35s ease-in-out infinite alternate; transform-box: fill-box; }
+  @keyframes flam { from { transform: scale(1, .9) skewX(-4deg); } to { transform: scale(.9, 1.1) skewX(4deg); } }
+
+  /* ---------- Retro-radio ---------- */
+  .radio { justify-self: center; width: min(100%, 40rem); padding: clamp(.4rem, 1.2vh, .7rem) .8rem;
+    border-radius: .9rem; border: 2px solid #26120a;
+    background: linear-gradient(180deg, #7a4a24, #4d2a12 60%, #3d200e);
+    box-shadow: inset 0 1px 0 rgba(255,220,160,.35), 0 8px 26px rgba(0,0,0,.55);
+    display: grid; grid-template-columns: auto 1fr auto; gap: .5rem .8rem; align-items: center; }
+  .grille { width: clamp(2.4rem, 6vh, 3.4rem); height: clamp(2.4rem, 6vh, 3.4rem); border-radius: .5rem; border: 2px solid #26120a;
+    background: repeating-linear-gradient(90deg, #170a05 0 3px, #a07a45 3px 5px); }
+  .scherm { background: #1b0f06; border: 2px solid #26120a; border-radius: .5rem; padding: .3rem .6rem; color: var(--amber);
+    box-shadow: inset 0 0 14px rgba(255,170,60,.25); min-width: 0; }
+  .scherm strong { display: block; font: 600 clamp(1rem, 2.4vh + .2vw, 1.35rem)/1.1 var(--serif); text-shadow: 0 0 8px rgba(255,170,60,.7); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .status { display: flex; align-items: center; gap: .4rem; font-size: .75rem; margin-top: .15rem; }
+  .lamp { width: .6rem; height: .6rem; border-radius: 50%; background: #6b5a45; flex: none; }
+  .lamp.laden { background: var(--amber); animation: knip .7s infinite; }
+  .lamp.live { background: #ff4a3d; box-shadow: 0 0 8px #ff4a3d; animation: knip 1.5s infinite; }
+  @keyframes knip { 50% { opacity: .25; } }
+  .dial { height: 6px; margin-top: .3rem; position: relative; background: repeating-linear-gradient(90deg, rgba(255,191,90,.6) 0 1px, transparent 1px 8px); }
+  .dial::after { content: ""; position: absolute; left: 62%; top: -3px; width: 2px; height: 12px; background: #ff4a3d; }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  button:focus-visible, input:focus-visible { outline: 2px solid var(--goud); outline-offset: 3px; }
+  .speel { width: clamp(2.8rem, 7vh, 3.6rem); height: clamp(2.8rem, 7vh, 3.6rem); border-radius: 50%; display: grid; place-items: center;
+    border: 2px solid #26120a; background: radial-gradient(circle at 35% 30%, #f6dc98, #b98a35 60%, #7d5a1d); box-shadow: 0 3px 8px rgba(0,0,0,.5); }
+  .speel:active { transform: scale(.94); }
+  .speel svg { width: 55%; height: 55%; fill: #3a1d08; }
+  .mix { grid-column: 1 / -1; display: flex; gap: .4rem 1rem; align-items: center; flex-wrap: wrap; font-size: .75rem; }
+  .mix label, .mix .groep { display: flex; align-items: center; gap: .4rem; flex: 1 1 8rem; }
+  .mix input { width: 100%; min-width: 3rem; accent-color: var(--goud); }
+  .vuurknop { border: 1px solid #26120a; border-radius: 1rem; padding: .2rem .7rem; background: #2a1509; color: var(--creme); white-space: nowrap; }
+  .vuurknop[aria-pressed="true"] { background: #b3401a; box-shadow: 0 0 10px rgba(255,120,30,.6); }
+  .fout { grid-column: 1 / -1; display: flex; gap: .8rem; align-items: center; justify-content: center; flex-wrap: wrap; font-size: .85rem; background: rgba(150,25,35,.7); border-radius: .5rem; padding: .35rem .6rem; }
+  .fout button { background: var(--creme); color: #3a0d12; border: 0; border-radius: 1rem; padding: .25rem .8rem; font-weight: 600; }
+
+  /* ---------- Startscherm ---------- */
+  .start { position: fixed; inset: 0; z-index: 10; display: grid; place-items: center; text-align: center; padding: 1rem;
+    background: radial-gradient(ellipse at 50% 70%, rgba(120,40,12,.8), rgba(10,3,2,.96)); transition: opacity 1s ease; }
+  .start.weg { opacity: 0; pointer-events: none; }
+  .start h2 { font: italic 500 clamp(1.4rem, 4vh + 2vw, 3rem) var(--serif); margin-bottom: 1.2rem; color: var(--goud); }
+  .groot { font: 600 clamp(1.1rem, 2.5vh + 1vw, 1.6rem) var(--serif); padding: .9em 2em; border-radius: 3rem; border: 1px solid var(--goud);
+    background: linear-gradient(145deg, #b3283a, #7d1523); box-shadow: 0 0 40px rgba(255,120,30,.45); }
+
+  /* ---------- Premium Christmas Lounge layout ---------- */
+  body { grid-template-rows: auto minmax(0,1fr) auto; gap: clamp(.25rem,1vh,.8rem); padding: max(1vh,env(safe-area-inset-top)) max(3vw,env(safe-area-inset-right)) max(1vh,env(safe-area-inset-bottom)) max(3vw,env(safe-area-inset-left));
+    background: radial-gradient(ellipse at 50% 78%,#35180d 0%,#160b08 48%,#090605 100%); }
+  .masthead { text-align:center; padding-top: .15rem; }
+  .eyebrow { color:#d8ad68; font-size:clamp(.52rem,1.1vh,.72rem); letter-spacing:.42em; font-weight:600; }
+  .star { color:#f2c875; padding:0 .45rem; }
+  .brandline { display:flex; align-items:center; justify-content:center; gap:clamp(.5rem,2vw,1.4rem); margin-top:.12rem; }
+  .brandline h1 { font:600 clamp(1.05rem,2.7vh + .6vw,2rem)/1 var(--serif); letter-spacing:.13em; color:#f6e5c5; text-shadow:0 2px 20px #a35d2a; }
+  .rule { height:1px; width:clamp(1.4rem,7vw,6rem); background:linear-gradient(90deg,transparent,#b98b4d); }
+  .rule:last-child { transform:scaleX(-1); }
+  .subline { color:#bba78c; font:italic 500 clamp(.65rem,1.3vh,.9rem) var(--serif); letter-spacing:.08em; margin-top:.22rem; }
+  .experience { min-height:0; display:grid; grid-template-columns:minmax(220px,.78fr) minmax(0,1.35fr); align-items:center; gap:clamp(.3rem,2vw,2rem); max-width:1300px; width:100%; margin:0 auto; }
+  .count-panel { grid-column:1; grid-row:1; padding:clamp(.6rem,2vh,1.5rem); border:1px solid rgba(210,169,100,.22); border-radius:1.2rem; background:linear-gradient(145deg,rgba(35,17,12,.76),rgba(13,8,7,.48)); box-shadow:0 15px 50px rgba(0,0,0,.22),inset 0 1px rgba(255,240,210,.06); }
+  .kicker { color:#c79d60; letter-spacing:.25em; font-size:clamp(.55rem,1.2vh,.75rem); margin-bottom:.7rem; }
+  .teller h2 { color:#f5e6c9; font:italic 500 clamp(1.2rem,3.2vh + 1vw,2.7rem)/1 var(--serif); letter-spacing:.1em; }
+  .tegels { margin-top:.45rem; gap:.45rem; flex-wrap:wrap; }
+  .tegel { min-width:0; flex:1; padding:clamp(.5rem,1.5vh,.9rem) .4rem; border-radius:.75rem; background:linear-gradient(155deg,rgba(91,49,25,.5),rgba(20,10,7,.75)); border:1px solid rgba(224,180,106,.36); box-shadow:inset 0 0 22px rgba(255,175,80,.045),0 8px 24px rgba(0,0,0,.18); }
+  .tegel.primary { flex:0 1 100%; padding:.8rem .4rem; }
+  .getal { color:#f4d49b; font-size:clamp(3rem,11vh + 1vw,7.8rem); text-shadow:0 0 28px rgba(255,166,75,.38); }
+  .eenheid { letter-spacing:.2em; font-size:clamp(.57rem,1.25vh,.8rem); }
+  .count-caption { color:#e8c78e; font:italic 600 clamp(1.1rem,3vh + .7vw,2.25rem)/1.15 var(--serif); letter-spacing:.12em; margin-top:.3rem; }
+  .small-note { color:#8f7961; letter-spacing:.2em; font-size:.58rem; margin-top:1rem; }
+  .feest { color:#f4d49b; font-size:clamp(2.1rem,6vh + 1vw,4.6rem); }
+  .podium { grid-column:2; grid-row:1; width:100%; height:100%; max-height:100%; }
+  .scene { width:min(100cqw,135cqh); max-height:100%; filter:drop-shadow(0 22px 35px rgba(0,0,0,.42)); }
+  .radio { width:min(100%,48rem); margin:0 auto; grid-template-columns:auto minmax(0,1fr) auto; border-color:#6d4828; background:linear-gradient(180deg,#694323,#3b2415 62%,#28170e); }
+  .trackline { color:#c9a879; font-size:.65rem; margin-top:.08rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .status { color:#f1d5a7; }
+  .mix { font-size:.7rem; }
+  .vuurknop { border-color:#9b7040; }
+  .start { background:radial-gradient(ellipse at 50% 72%,rgba(112,48,18,.86),rgba(7,4,3,.98)); }
+  .start h2 { letter-spacing:.04em; }
+  @media (max-width:700px) {
+    body { padding: max(.45rem,env(safe-area-inset-top)) max(.65rem,env(safe-area-inset-right)) max(.45rem,env(safe-area-inset-bottom)) max(.65rem,env(safe-area-inset-left)); gap:.35rem; }
+    .experience { grid-template-columns:1fr; grid-template-rows:minmax(0,1fr) auto; gap:0; }
+    .podium { grid-column:1; grid-row:1; align-self:center; height:100%; }
+    .scene { width:min(100cqw,100cqh); }
+    .count-panel { grid-column:1; grid-row:2; padding:.35rem .6rem; margin:0 auto; width:min(100%,29rem); }
+    .kicker { margin-bottom:.2rem; font-size:.52rem; }
+    .teller h2 { font-size:1.15rem; }
+    .tegel.primary { padding:.25rem .4rem; }
+    .getal { font-size:clamp(2.5rem,7vh,4rem); }
+    .count-caption { font-size:1.15rem; }
+    .small-note { display:none; }
+    .radio { width:100%; padding:.35rem .5rem; gap:.35rem .55rem; }
+    .mix { gap:.3rem .7rem; }
+  }
+  @media (max-width:380px) {
+    .mix { font-size:.62rem; }
+    .mix label,.mix .groep { flex-basis:7rem; }
+    .brandline h1 { font-size:1rem; }
+    .subline { font-size:.62rem; }
+  }
+  @media (orientation:landscape) and (max-height:520px) {
+    body { grid-template-columns:1fr; grid-template-rows:auto minmax(0,1fr) auto; }
+    .experience { grid-template-columns:.8fr 1.2fr; }
+    .count-panel { grid-column:1; grid-row:1; }
+    .podium { grid-column:2; grid-row:1; }
+    .radio { grid-column:1; grid-row:3; }
+    .masthead { grid-row:1; }
+    .experience { grid-row:2; }
+    .mix { display:flex; }
+  }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="gloed"></div>
+<canvas id="sneeuw" aria-hidden="true"></canvas>
+
+<!-- COUNTDOWN / LOUNGE INTRO -->
+<header class="masthead">
+  <div class="eyebrow"><span class="star">✦</span> THE CHRISTMAS LOUNGE <span class="star">✦</span></div>
+  <div class="brandline"><span class="rule"></span><h1>CHRISTMAS COUNTDOWN</h1><span class="rule"></span></div>
+  <p class="subline">A little warmth. A little wonder. A lot of Christmas.</p>
+</header>
+<main class="experience">
+  <section class="count-panel teller" aria-label="Countdown naar Kerst">
+    <p class="kicker" id="modeLabel">DE MAGIE KOMT DICHTERBIJ</p>
+    <h2 id="kop">NOG</h2>
+    <div id="tegels" class="tegels" role="timer" aria-live="off">
+      <div class="tegel primary"><span class="getal" id="d">0</span><span class="eenheid">NACHTJES</span></div>
+    </div>
+    <p class="count-caption" id="countCaption">TOT KERST</p>
+    <p class="feest" id="feest" hidden>VROLIJK<br>KERSTFEEST!</p>
+    <p class="small-note" id="dateNote">25 DECEMBER · 00:00</p>
+  </section>
+<!-- HAARD: SVG-schouw + canvas-vuur -->
+<div class="podium" role="img" aria-label="Een knapperend haardvuur met kousen, kaarsen en een kleine kerstboom op de schoorsteenmantel">
+  <div class="scene">
+    <svg viewBox="0 0 500 400" aria-hidden="true">
+      <defs>
+        <pattern id="steen" width="50" height="24" patternUnits="userSpaceOnUse">
+          <rect width="50" height="24" fill="#2e150f"/>
+          <rect x="1" y="1" width="48" height="10" rx="1.5" fill="#8c4632"/>
+          <rect x="-24" y="13" width="48" height="10" rx="1.5" fill="#7a3b29"/>
+          <rect x="26" y="13" width="48" height="10" rx="1.5" fill="#97523b"/>
+        </pattern>
+        <linearGradient id="hout" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7a4a22"/><stop offset="1" stop-color="#3b200d"/></linearGradient>
+        <linearGradient id="blok" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5a3519"/><stop offset="1" stop-color="#1f0f06"/></linearGradient>
+        <radialGradient id="schijn" cx="50%" cy="82%" r="60%"><stop offset="0" stop-color="#ff8a2a" stop-opacity=".75"/><stop offset="1" stop-color="#ff5a10" stop-opacity="0"/></radialGradient>
+        <radialGradient id="sintel" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ffd27a"/><stop offset=".5" stop-color="#ff6a1a"/><stop offset="1" stop-color="#ff3a0a" stop-opacity="0"/></radialGradient>
+      </defs>
+      <!-- bakstenen schouw -->
+      <rect x="70" y="106" width="360" height="294" fill="url(#steen)"/>
+      <!-- haardopening (boog) -->
+      <path d="M150 400V228Q150 175 205 175H295Q350 175 350 228V400Z" fill="#0b0403" stroke="#1d0d07" stroke-width="6"/>
+      <path d="M150 400V228Q150 175 205 175H295Q350 175 350 228V400Z" fill="none" stroke="#5a2b1c" stroke-width="2"/>
+      <!-- houtblokken en sintels -->
+      <ellipse class="licht" cx="250" cy="386" rx="95" ry="14" fill="url(#sintel)"/>
+      <g transform="rotate(-7 250 372)"><rect x="172" y="358" width="156" height="26" rx="13" fill="url(#blok)"/><ellipse cx="324" cy="371" rx="5" ry="11" fill="#caa06a"/><path d="M190 364q40 4 80 0" stroke="#150a04" stroke-width="2" fill="none"/></g>
+      <g transform="rotate(9 250 378)"><rect x="176" y="366" width="150" height="24" rx="12" fill="url(#blok)"/><ellipse cx="180" cy="378" rx="5" ry="10" fill="#caa06a"/><path d="M210 374q40 4 80 0" stroke="#150a04" stroke-width="2" fill="none"/></g>
+      <rect class="licht" x="190" y="380" width="120" height="6" rx="3" fill="#ff7a22" opacity=".8"/>
+      <!-- vuurschijn op de stenen -->
+      <rect class="licht" x="70" y="106" width="360" height="294" fill="url(#schijn)" style="mix-blend-mode:screen"/>
+      <!-- haardvloer -->
+      <rect x="30" y="388" width="440" height="12" fill="#3a2a24"/><rect x="30" y="388" width="440" height="3" fill="#6a564c"/>
+      <!-- houten mantel -->
+      <rect x="40" y="70" width="420" height="22" rx="3" fill="url(#hout)"/><rect x="40" y="70" width="420" height="3" fill="#a77a45"/>
+      <rect x="62" y="92" width="376" height="14" fill="#4a2a12"/>
+      <path d="M60 80h380M60 85h380" stroke="#2c170a" stroke-width=".8" opacity=".6"/>
+      <!-- kaarsen -->
+      <g><rect x="92" y="42" width="12" height="28" fill="#f4e7c8"/><ellipse class="kaars" cx="98" cy="36" rx="3.5" ry="7" fill="#ffb840"/></g>
+      <g><rect x="170" y="48" width="10" height="22" fill="#f4e7c8"/><ellipse class="kaars" cx="175" cy="43" rx="3" ry="6" fill="#ffb840"/></g>
+      <!-- kerstboompje -->
+      <g transform="translate(390 8)"><rect x="-4" y="52" width="8" height="10" fill="#5a3519"/>
+        <path d="M0 0L-18 24H18Z" fill="#1d5a32"/><path d="M0 14L-26 40H26Z" fill="#1d5a32"/><path d="M0 28L-32 56H32Z" fill="#17492a"/>
+        <circle cx="-8" cy="38" r="2.5" fill="#d9363e"/><circle cx="10" cy="46" r="2.5" fill="#f0bd5a"/><circle cx="2" cy="22" r="2.2" fill="#f0bd5a"/><circle cx="0" cy="-1" r="3" fill="#ffd86a"/></g>
+      <!-- kousen -->
+      <g><path d="M222 106v38q0 9-9 9h-11q-9 0-9-8t9-8v-31z" fill="#c42a36"/><rect x="204" y="104" width="20" height="8" fill="#f8eed8"/></g>
+      <g><path d="M262 106v34q0 9-9 9h-12q-9 0-9-8t9-8v-27z" fill="#2c7a4a"/><rect x="244" y="104" width="20" height="8" fill="#f8eed8"/></g>
+      <g><path d="M300 106v38q0 9-9 9h-11q-9 0-9-8t9-8v-31z" fill="#c42a36"/><rect x="282" y="104" width="20" height="8" fill="#f8eed8"/></g>
+    </svg>
+    <canvas id="vuur" aria-hidden="true"></canvas>
+  </div>
+</div>
+</main>
+
+<!-- RADIO -->
+<section class="radio" aria-label="Kerstradio">
+  <div class="grille" aria-hidden="true"></div>
+  <div class="scherm">
+    <strong>Sky Radio Christmas</strong>
+    <div class="trackline" id="trackline">Non-stop kerstmuziek · live stream</div>
+    <div class="status"><span class="lamp" id="lamp"></span><span id="statusTekst">Gepauzeerd</span></div>
+    <div class="dial" aria-hidden="true"></div>
+  </div>
+  <button class="speel" id="speel" type="button" aria-label="Start de radio">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path id="icoon" d="M7 4.5v15l13-7.5z"/></svg>
+  </button>
+  <div class="mix">
+    <label>Radio <input id="radioVol" type="range" min="0" max="1" step=".01" value=".6" aria-label="Volume van de radio"></label>
+    <div class="groep">
+      <button class="vuurknop" id="vuurKnop" type="button" aria-pressed="false">Haardgeluid</button>
+      <input id="vuurVol" type="range" min="0" max="1" step=".01" value=".4" aria-label="Volume van het haardgeluid">
+    </div>
+  </div>
+  <div class="fout" id="fout" role="alert" hidden>
+    <span>De stream kon niet worden geladen.</span><button id="opnieuw" type="button">Opnieuw proberen</button>
+  </div>
+  <audio id="audio" preload="none"></audio>
+  <audio id="fireAudio" src="https://sfxmint.com/dl/ambience-fireplace-03.mp3" preload="none" loop></audio>
+</section>
+
+<!-- STARTSCHERM: browsers eisen een klik voordat geluid mag -->
+<div class="start" id="start">
+  <div><h2>Welkom in jouw Christmas Lounge</h2>
+  <button class="groot" id="startKnop" type="button">Start Sky Radio Christmas</button></div>
+</div>
+
+<script>
+/* =====================  INSTELLINGEN  ===================== */
+const STREAM_URL = "https://playerservices.streamtheworld.com/api/livestream-redirect/SRGSTR08.mp3"; // Sky Radio Christmas
+const MAX_SNEEUW = 60;
+/* ========================================================== */
+
+const $ = id => document.getElementById(id);
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const root = document.documentElement;
+
+/* ---------- Countdown (lokale tijd, springt vanzelf naar volgend jaar) ---------- */
+const pad = n => String(n).padStart(2, "0");
+function tik() {
+  const nu = new Date(), jaar = nu.getFullYear();
+  const kerst = new Date(jaar, 11, 25, 0, 0, 0);
+  const einde = new Date(jaar, 11, 26, 0, 0, 0);
+  const feest = nu >= kerst && nu < einde;           // 25 december: feestboodschap
+  $("feest").hidden = !feest; $("tegels").hidden = $("kop").hidden = feest;
+  if (feest) return;
+  const doel = nu < kerst ? kerst : new Date(jaar + 1, 11, 25, 0, 0, 0);
+  const sec = Math.floor((doel - nu) / 1000);
+  $("d").textContent = Math.floor(sec / 86400);
+  $("u").textContent = pad(Math.floor(sec % 86400 / 3600));
+  $("m").textContent = pad(Math.floor(sec % 3600 / 60));
+  $("s").textContent = pad(sec % 60);
+}
+tik(); setInterval(tik, 1000);
+
+/* ---------- Vuur: particle-systeem (vlammen, vonken, rook) ---------- */
+const fc = $("vuur"), fx = fc.getContext("2d");
+let FW = 1, FH = 1, vlam = [], vonk = [], rook = [], t = 0, accF = 0, accS = 0, accR = 0;
+function maatVuur() {
+  const d = Math.min(devicePixelRatio || 1, 1.5);
+  FW = fc.clientWidth || 1; FH = fc.clientHeight || 1;
+  fc.width = FW * d; fc.height = FH * d; fx.setTransform(d, 0, 0, d, 0, 0);
+}
+// Zachte gloeiende bolletjes, eenmalig voorgerenderd (goedkoop tekenen met drawImage)
+function sprite(rgb) {
+  const c = document.createElement("canvas"); c.width = c.height = 64;
+  const g = c.getContext("2d"), r = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+  r.addColorStop(0, `rgba(${rgb},1)`); r.addColorStop(.4, `rgba(${rgb},.45)`); r.addColorStop(1, `rgba(${rgb},0)`);
+  g.fillStyle = r; g.fillRect(0, 0, 64, 64); return c;
+}
+const KLEUR = [sprite("255,244,200"), sprite("255,150,40"), sprite("210,45,10")]; // kern, midden, rand
+const ROOK = sprite("125,115,110");
+const rnd = Math.random;
+
+function stap(dt) {
+  t += dt;
+  accF += dt * 150; while (accF >= 1) { accF--; vlam.push({ x: FW * (.5 + (rnd() + rnd() + rnd() - 1.5) * .17), y: FH * (.82 + rnd() * .06), vy: -FH * (.4 + rnd() * .4), s: FW * (.1 + rnd() * .1), l: 0, m: .8 + rnd() * .8, p: rnd() * 6.28 }); }
+  accS += dt * 9;   while (accS >= 1) { accS--; vonk.push({ x: FW * (.35 + rnd() * .3), y: FH * .8, vx: (rnd() - .5) * FW * .15, vy: -FH * (.5 + rnd() * .6), l: 0, m: 1.5 + rnd() * 1.8, p: rnd() * 6.28 }); }
+  accR += dt * 5;   while (accR >= 1) { accR--; rook.push({ x: FW * (.4 + rnd() * .2), y: FH * .4, vy: -FH * .12, s: FW * .12, l: 0, m: 2.5 + rnd() * 1.5, p: rnd() * 6.28 }); }
+  for (const lijst of [vlam, vonk, rook]) for (let i = lijst.length - 1; i >= 0; i--) {
+    const p = lijst[i]; p.l += dt;
+    if (p.l >= p.m) { lijst[i] = lijst[lijst.length - 1]; lijst.pop(); continue; }
+    p.y += p.vy * dt;
+    if (lijst === vlam) p.x += ((FW / 2 - p.x) * .9 + Math.sin(t * 7 + p.p) * FW * .07) * dt;   // vlammen trekken naar het midden
+    else if (lijst === vonk) { p.vy *= 1 - .15 * dt; p.x += (p.vx + Math.sin(t * 4 + p.p) * FW * .1) * dt; }
+    else { p.x += Math.sin(t + p.p) * FW * .03 * dt; p.s += FW * .05 * dt; }
+  }
+}
+function teken(f) {
+  fx.clearRect(0, 0, FW, FH);
+  fx.globalCompositeOperation = "source-over"; fx.globalAlpha = 1;
+  for (const p of rook) { const a = p.l / p.m; fx.globalAlpha = Math.sin(a * 3.14) * .09; fx.drawImage(ROOK, p.x - p.s, p.y - p.s, p.s * 2, p.s * 2); }
+  fx.globalCompositeOperation = "lighter";
+  // gloeiend sintelbed onderin
+  const g = fx.createRadialGradient(FW / 2, FH * .92, 0, FW / 2, FH * .92, FW * .5);
+  g.addColorStop(0, `rgba(255,120,30,${.55 * f})`); g.addColorStop(1, "rgba(255,60,10,0)");
+  fx.globalAlpha = 1; fx.fillStyle = g; fx.fillRect(0, FH * .5, FW, FH * .5);
+  for (const p of vlam) {
+    const a = p.l / p.m, s = p.s * (1.1 - a * .8);
+    fx.globalAlpha = Math.pow(1 - a, 1.2) * .6 * (.7 + .3 * f);
+    fx.drawImage(KLEUR[a < .25 ? 0 : a < .65 ? 1 : 2], p.x - s, p.y - s * 1.3, s * 2, s * 2.6);
+  }
+  fx.globalAlpha = 1; fx.fillStyle = "#ffc870";
+  for (const p of vonk) { fx.globalAlpha = 1 - p.l / p.m; fx.fillRect(p.x, p.y, 1.8, 1.8); }
+  fx.globalAlpha = 1; fx.globalCompositeOperation = "source-over";
+}
+// Flikkering: som van sinussen + toeval, stuurt gloed op muur, stenen en sintels
+let f = .8;
+function flikker() { const n = (Math.sin(t * 7.1) + Math.sin(t * 11.3 + 1) + Math.sin(t * 3.7 + 2)) / 6 + .5; f = Math.min(1, Math.max(.55, .62 + n * .38 + (rnd() - .5) * .08)); root.style.setProperty("--f", f.toFixed(3)); }
+
+let vuurRaf = 0, laatste = 0;
+function lus(ts) { const dt = Math.min((ts - laatste) / 1000, .05); laatste = ts; stap(dt); flikker(); teken(); vuurRaf = requestAnimationFrame(lus); }
+function startVuur() { if (reduce || vuurRaf) return; laatste = performance.now(); vuurRaf = requestAnimationFrame(lus); }
+// Eerste (stilstaande) beeld vóór de klik, en vast beeld bij prefers-reduced-motion
+maatVuur(); for (let i = 0; i < 90; i++) stap(1 / 30); flikker(); teken();
+
+/* ---------- Sneeuw ---------- */
+const sc = $("sneeuw"), sx = sc.getContext("2d"); let SW, SH, vlokken = [], sneeuwRaf = 0;
+function maatSneeuw() { const d = Math.min(devicePixelRatio || 1, 2); SW = innerWidth; SH = innerHeight; sc.width = SW * d; sc.height = SH * d; sx.setTransform(d, 0, 0, d, 0, 0);
+  vlokken = Array.from({ length: Math.min(MAX_SNEEUW, Math.round(SW * SH / 20000)) }, () => ({ x: rnd() * SW, y: rnd() * SH, r: rnd() * 2 + .7, v: rnd() * .7 + .35, f: rnd() * 6.28 })); }
+function sneeuwLus() {
+  sx.clearRect(0, 0, SW, SH); sx.fillStyle = "rgba(255,255,255,.8)";
+  for (const v of vlokken) { v.y += v.v; v.f += .01; v.x += Math.sin(v.f) * .35; if (v.y > SH + 4) { v.y = -4; v.x = rnd() * SW; } sx.beginPath(); sx.arc(v.x, v.y, v.r, 0, 6.283); sx.fill(); }
+  sneeuwRaf = requestAnimationFrame(sneeuwLus);
+}
+maatSneeuw();
+addEventListener("resize", () => { maatVuur(); maatSneeuw(); });
+document.addEventListener("visibilitychange", () => {   // niets tekenen als het tabblad verborgen is
+  if (document.hidden) { cancelAnimationFrame(vuurRaf); cancelAnimationFrame(sneeuwRaf); vuurRaf = sneeuwRaf = 0; }
+  else if (gestart) { startVuur(); if (!reduce && !sneeuwRaf) sneeuwLus(); }
+});
+
+/* ---------- Echt haardgeluid: externe CC0-opname ---------- */
+const fireAudio = $("fireAudio"); let vuurAan = false;
+fireAudio.volume = parseFloat($("vuurVol").value);
+function zetVuurGeluid(aan) {
+  vuurAan = aan; $("vuurKnop").setAttribute("aria-pressed", String(aan));
+  $("vuurKnop").textContent = aan ? "Haardgeluid aan" : "Haardgeluid uit";
+  if (aan) fireAudio.play().catch(() => { $("vuurKnop").textContent = "Tik om haardgeluid te starten"; });
+  else fireAudio.pause();
+}
+$("vuurKnop").addEventListener("click", () => zetVuurGeluid(!vuurAan));
+$("vuurVol").addEventListener("input", () => fireAudio.volume = parseFloat($("vuurVol").value));
+
+/* ---------- Radio ---------- */
+const audio = $("audio"), speel = $("speel"); let gestart = false;
+const status = (soort, tekst) => { $("lamp").className = "lamp " + soort; $("statusTekst").textContent = tekst; };
+audio.volume = parseFloat($("radioVol").value);
+$("radioVol").addEventListener("input", e => audio.volume = parseFloat(e.target.value));
+function icoon(speelt) {
+  $("icoon").setAttribute("d", speelt ? "M6 4.5h4.2v15H6zM13.8 4.5H18v15h-4.2z" : "M7 4.5v15l13-7.5z");
+  speel.setAttribute("aria-label", speelt ? "Pauzeer de radio" : "Speel de radio af");
+}
+function toonFout() { $("fout").hidden = false; status("", "Geen verbinding"); icoon(false); audio.removeAttribute("src"); }
+async function afspelen() {
+  $("fout").hidden = true; status("laden", "Nu aan het laden…");
+  if (!audio.getAttribute("src")) audio.src = STREAM_URL;
+  try { await audio.play(); } catch (e) { if (e.name !== "AbortError") toonFout(); }
+}
+audio.addEventListener("playing", () => { status("live", "LIVE"); icoon(true); });
+audio.addEventListener("waiting", () => { if (!audio.paused) status("laden", "Bufferen…"); });
+audio.addEventListener("pause",   () => { status("", "Gepauzeerd"); icoon(false); });
+audio.addEventListener("error",   toonFout);
+$("opnieuw").addEventListener("click", afspelen);
+const wissel = () => audio.paused ? afspelen() : audio.pause();
+speel.addEventListener("click", wissel);
+document.addEventListener("keydown", e => { if (e.code === "Space" && gestart && !e.target.closest("button, input")) { e.preventDefault(); wissel(); } });
+
+/* ---------- Startknop: radio, vuurgeluid en animatie tegelijk ---------- */
+$("startKnop").addEventListener("click", () => {
+  gestart = true; $("start").classList.add("weg");
+  startVuur(); if (!reduce) sneeuwLus();
+  afspelen();
+});
+</script>
+</body>
+</html>
