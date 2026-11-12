@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Gezellig bij de haard · Kerstcountdown</title>
+<title>Christmas Lounge · Christmas Countdown</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0e0504">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,7 +13,7 @@
     --goud: #f0bd5a; --creme: #f8eed8; --amber: #ffbf5a;
     --serif: "Cormorant Garamond", "Palatino Linotype", Georgia, serif;
     --sans: "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-    --f: .8; /* vlamintensiteit (0-1), wordt elk frame door JS bijgewerkt */
+    --f: .8; /* flame intensity (0-1), updated by JS each frame */
   }
   * { box-sizing: border-box; margin: 0; }
   html, body { height: 100%; overflow: hidden; background: #0e0504; }
@@ -24,7 +24,7 @@
     display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: clamp(.3rem, 1.4vh, 1rem);
   }
   [hidden] { display: none !important; }
-  /* Warme gloed op de muur en vloer, flikkert mee met het vuur */
+  /* Warm glow on the wall and floor, flickering with the fire */
   .gloed { position: fixed; inset: 0; z-index: -2; pointer-events: none; opacity: var(--f);
     background: radial-gradient(ellipse 65% 60% at 50% 82%, rgba(255,120,30,.5), transparent 70%),
                 radial-gradient(ellipse 90% 25% at 50% 100%, rgba(255,90,20,.45), transparent 80%); }
@@ -46,7 +46,7 @@
   .podium { container-type: size; min-height: 0; display: grid; place-items: center; }
   .scene { position: relative; width: min(100cqw, 125cqh); aspect-ratio: 5 / 4; }
   .scene svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-  /* Het canvas ligt precies op de haardopening (x150-350, y175-400 van de 500x400 SVG) */
+  /* Canvas aligns with the fireplace opening */
   #vuur { position: absolute; left: 30%; top: 43.75%; width: 40%; height: 56.25%;
     filter: blur(1.3px) saturate(1.25) drop-shadow(0 0 10px rgba(255,120,30,.7)); }
   .licht { opacity: var(--f); }
@@ -170,18 +170,18 @@
   <p class="subline">A little warmth. A little wonder. A lot of Christmas.</p>
 </header>
 <main class="experience">
-  <section class="count-panel teller" aria-label="Countdown naar Kerst">
-    <p class="kicker" id="modeLabel">DE MAGIE KOMT DICHTERBIJ</p>
-    <h2 id="kop">NOG</h2>
+  <section class="count-panel teller" aria-label="Christmas countdown">
+    <p class="kicker" id="modeLabel">THE MAGIC IS GETTING CLOSER</p>
+    <h2 id="kop">ONLY</h2>
     <div id="tegels" class="tegels" role="timer" aria-live="off">
-      <div class="tegel primary"><span class="getal" id="d">0</span><span class="eenheid">NACHTJES</span></div>
+      <div class="tegel primary"><span class="getal" id="d">0</span><span class="eenheid" id="unit">NIGHTS</span></div>
     </div>
-    <p class="count-caption" id="countCaption">TOT KERST</p>
-    <p class="feest" id="feest" hidden>VROLIJK<br>KERSTFEEST!</p>
-    <p class="small-note" id="dateNote">25 DECEMBER · 00:00</p>
+    <p class="count-caption" id="countCaption">UNTIL CHRISTMAS</p>
+    <p class="feest" id="feest" hidden>MERRY<br>CHRISTMAS!</p>
+    <p class="small-note" id="dateNote">DECEMBER 25 · 12:00 AM</p>
   </section>
-<!-- HAARD: SVG-schouw + canvas-vuur -->
-<div class="podium" role="img" aria-label="Een knapperend haardvuur met kousen, kaarsen en een kleine kerstboom op de schoorsteenmantel">
+<!-- FIREPLACE: SVG mantel + animated fire canvas -->
+<div class="podium" role="img" aria-label="A crackling fireplace with stockings, candles and a little Christmas tree on the mantelpiece">
   <div class="scene">
     <svg viewBox="0 0 500 400" aria-hidden="true">
       <defs>
@@ -196,32 +196,32 @@
         <radialGradient id="schijn" cx="50%" cy="82%" r="60%"><stop offset="0" stop-color="#ff8a2a" stop-opacity=".75"/><stop offset="1" stop-color="#ff5a10" stop-opacity="0"/></radialGradient>
         <radialGradient id="sintel" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ffd27a"/><stop offset=".5" stop-color="#ff6a1a"/><stop offset="1" stop-color="#ff3a0a" stop-opacity="0"/></radialGradient>
       </defs>
-      <!-- bakstenen schouw -->
+      <!-- brick fireplace -->
       <rect x="70" y="106" width="360" height="294" fill="url(#steen)"/>
-      <!-- haardopening (boog) -->
+      <!-- arched fireplace opening -->
       <path d="M150 400V228Q150 175 205 175H295Q350 175 350 228V400Z" fill="#0b0403" stroke="#1d0d07" stroke-width="6"/>
       <path d="M150 400V228Q150 175 205 175H295Q350 175 350 228V400Z" fill="none" stroke="#5a2b1c" stroke-width="2"/>
-      <!-- houtblokken en sintels -->
+      <!-- logs and embers -->
       <ellipse class="licht" cx="250" cy="386" rx="95" ry="14" fill="url(#sintel)"/>
       <g transform="rotate(-7 250 372)"><rect x="172" y="358" width="156" height="26" rx="13" fill="url(#blok)"/><ellipse cx="324" cy="371" rx="5" ry="11" fill="#caa06a"/><path d="M190 364q40 4 80 0" stroke="#150a04" stroke-width="2" fill="none"/></g>
       <g transform="rotate(9 250 378)"><rect x="176" y="366" width="150" height="24" rx="12" fill="url(#blok)"/><ellipse cx="180" cy="378" rx="5" ry="10" fill="#caa06a"/><path d="M210 374q40 4 80 0" stroke="#150a04" stroke-width="2" fill="none"/></g>
       <rect class="licht" x="190" y="380" width="120" height="6" rx="3" fill="#ff7a22" opacity=".8"/>
-      <!-- vuurschijn op de stenen -->
+      <!-- firelight on the bricks -->
       <rect class="licht" x="70" y="106" width="360" height="294" fill="url(#schijn)" style="mix-blend-mode:screen"/>
-      <!-- haardvloer -->
+      <!-- hearth -->
       <rect x="30" y="388" width="440" height="12" fill="#3a2a24"/><rect x="30" y="388" width="440" height="3" fill="#6a564c"/>
-      <!-- houten mantel -->
+      <!-- wooden mantelpiece -->
       <rect x="40" y="70" width="420" height="22" rx="3" fill="url(#hout)"/><rect x="40" y="70" width="420" height="3" fill="#a77a45"/>
       <rect x="62" y="92" width="376" height="14" fill="#4a2a12"/>
       <path d="M60 80h380M60 85h380" stroke="#2c170a" stroke-width=".8" opacity=".6"/>
-      <!-- kaarsen -->
+      <!-- candles -->
       <g><rect x="92" y="42" width="12" height="28" fill="#f4e7c8"/><ellipse class="kaars" cx="98" cy="36" rx="3.5" ry="7" fill="#ffb840"/></g>
       <g><rect x="170" y="48" width="10" height="22" fill="#f4e7c8"/><ellipse class="kaars" cx="175" cy="43" rx="3" ry="6" fill="#ffb840"/></g>
-      <!-- kerstboompje -->
+      <!-- little Christmas tree -->
       <g transform="translate(390 8)"><rect x="-4" y="52" width="8" height="10" fill="#5a3519"/>
         <path d="M0 0L-18 24H18Z" fill="#1d5a32"/><path d="M0 14L-26 40H26Z" fill="#1d5a32"/><path d="M0 28L-32 56H32Z" fill="#17492a"/>
         <circle cx="-8" cy="38" r="2.5" fill="#d9363e"/><circle cx="10" cy="46" r="2.5" fill="#f0bd5a"/><circle cx="2" cy="22" r="2.2" fill="#f0bd5a"/><circle cx="0" cy="-1" r="3" fill="#ffd86a"/></g>
-      <!-- kousen -->
+      <!-- stockings -->
       <g><path d="M222 106v38q0 9-9 9h-11q-9 0-9-8t9-8v-31z" fill="#c42a36"/><rect x="204" y="104" width="20" height="8" fill="#f8eed8"/></g>
       <g><path d="M262 106v34q0 9-9 9h-12q-9 0-9-8t9-8v-27z" fill="#2c7a4a"/><rect x="244" y="104" width="20" height="8" fill="#f8eed8"/></g>
       <g><path d="M300 106v38q0 9-9 9h-11q-9 0-9-8t9-8v-31z" fill="#c42a36"/><rect x="282" y="104" width="20" height="8" fill="#f8eed8"/></g>
@@ -232,26 +232,26 @@
 </main>
 
 <!-- RADIO -->
-<section class="radio" aria-label="Kerstradio">
+<section class="radio" aria-label="Christmas radio">
   <div class="grille" aria-hidden="true"></div>
   <div class="scherm">
     <strong>Sky Radio Christmas</strong>
-    <div class="trackline" id="trackline">Non-stop kerstmuziek · live stream</div>
-    <div class="status"><span class="lamp" id="lamp"></span><span id="statusTekst">Gepauzeerd</span></div>
+    <div class="trackline" id="trackline">Non-stop Christmas music · live stream</div>
+    <div class="status"><span class="lamp" id="lamp"></span><span id="statusTekst">Paused</span></div>
     <div class="dial" aria-hidden="true"></div>
   </div>
-  <button class="speel" id="speel" type="button" aria-label="Start de radio">
+  <button class="speel" id="speel" type="button" aria-label="Play the radio">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path id="icoon" d="M7 4.5v15l13-7.5z"/></svg>
   </button>
   <div class="mix">
-    <label>Radio <input id="radioVol" type="range" min="0" max="1" step=".01" value=".6" aria-label="Volume van de radio"></label>
+    <label>Radio <input id="radioVol" type="range" min="0" max="1" step=".01" value=".6" aria-label="Radio volume"></label>
     <div class="groep">
-      <button class="vuurknop" id="vuurKnop" type="button" aria-pressed="false">Haardgeluid</button>
-      <input id="vuurVol" type="range" min="0" max="1" step=".01" value=".4" aria-label="Volume van het haardgeluid">
+      <button class="vuurknop" id="vuurKnop" type="button" aria-pressed="false">Fireplace sound off</button>
+      <input id="vuurVol" type="range" min="0" max="1" step=".01" value=".4" aria-label="Fireplace sound volume">
     </div>
   </div>
   <div class="fout" id="fout" role="alert" hidden>
-    <span>De stream kon niet worden geladen.</span><button id="opnieuw" type="button">Opnieuw proberen</button>
+    <span>The stream could not be loaded.</span><button id="opnieuw" type="button">Try again</button>
   </div>
   <audio id="audio" preload="none"></audio>
   <audio id="fireAudio" src="https://sfxmint.com/dl/ambience-fireplace-03.mp3" preload="none" loop></audio>
@@ -259,39 +259,58 @@
 
 <!-- STARTSCHERM: browsers eisen een klik voordat geluid mag -->
 <div class="start" id="start">
-  <div><h2>Welkom in jouw Christmas Lounge</h2>
-  <button class="groot" id="startKnop" type="button">Start Sky Radio Christmas</button></div>
+  <div><h2>Welcome to your Christmas Lounge</h2>
+  <button class="groot" id="startKnop" type="button">Play Sky Radio Christmas</button></div>
 </div>
 
 <script>
 /* =====================  INSTELLINGEN  ===================== */
-const STREAM_URL = "https://playerservices.streamtheworld.com/api/livestream-redirect/SRGSTR08.mp3"; // Sky Radio Christmas
-const MAX_SNEEUW = 60;
+const STREAM_URL = "https://playerservices.streamtheworld.com/api/livestream-redirect/SRGSTR08.mp3"; // Official Sky Radio Christmas stream
+const MAX_SNOWFLAKES = 60;
 /* ========================================================== */
 
 const $ = id => document.getElementById(id);
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const root = document.documentElement;
 
-/* ---------- Countdown (lokale tijd, springt vanzelf naar volgend jaar) ---------- */
+/* ---------- Christmas countdown ---------- */
 const pad = n => String(n).padStart(2, "0");
 function tik() {
-  const nu = new Date(), jaar = nu.getFullYear();
-  const kerst = new Date(jaar, 11, 25, 0, 0, 0);
-  const einde = new Date(jaar, 11, 26, 0, 0, 0);
-  const feest = nu >= kerst && nu < einde;           // 25 december: feestboodschap
-  $("feest").hidden = !feest; $("tegels").hidden = $("kop").hidden = feest;
-  if (feest) return;
-  const doel = nu < kerst ? kerst : new Date(jaar + 1, 11, 25, 0, 0, 0);
-  const sec = Math.floor((doel - nu) / 1000);
-  $("d").textContent = Math.floor(sec / 86400);
-  $("u").textContent = pad(Math.floor(sec % 86400 / 3600));
-  $("m").textContent = pad(Math.floor(sec % 3600 / 60));
-  $("s").textContent = pad(sec % 60);
+  const now = new Date();
+  const year = now.getFullYear();
+  const christmas = new Date(year, 11, 25, 0, 0, 0);
+  const christmasEnd = new Date(year, 11, 26, 0, 0, 0);
+  const isChristmasDay = now >= christmas && now < christmasEnd;
+  const isChristmasEve = now.getMonth() === 11 && now.getDate() === 24;
+  const heading = $("kop"), tiles = $("tegels");
+  $("feest").hidden = !isChristmasDay;
+  heading.hidden = tiles.hidden = isChristmasDay;
+  if (isChristmasDay) return;
+
+  if (isChristmasEve) {
+    const seconds = Math.max(0, Math.floor((christmas - now) / 1000));
+    $("modeLabel").textContent = "THE FINAL COUNTDOWN";
+    heading.textContent = "CHRISTMAS BEGINS IN…";
+    $("countCaption").textContent = "THE MAGIC IS ALMOST HERE";
+    $("dateNote").textContent = "CHRISTMAS EVE · COUNTING DOWN TO MIDNIGHT";
+    tiles.innerHTML = `
+      <div class="tegel"><span class="getal" id="h">${pad(Math.floor(seconds / 3600))}</span><span class="eenheid">HOURS</span></div>
+      <div class="tegel"><span class="getal" id="m">${pad(Math.floor(seconds % 3600 / 60))}</span><span class="eenheid">MINUTES</span></div>
+      <div class="tegel"><span class="getal" id="s">${pad(seconds % 60)}</span><span class="eenheid">SECONDS</span></div>`;
+  } else {
+    const target = now < christmas ? christmas : new Date(year + 1, 11, 25, 0, 0, 0);
+    const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    const nights = Math.max(0, Math.round((new Date(target.getFullYear(), 11, 25) - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / 86400000));
+    $("modeLabel").textContent = "THE MAGIC IS GETTING CLOSER";
+    heading.textContent = "ONLY";
+    $("countCaption").textContent = "UNTIL CHRISTMAS";
+    $("dateNote").textContent = "DECEMBER 25 · 12:00 AM";
+    tiles.innerHTML = `<div class="tegel primary"><span class="getal" id="d">${nights}</span><span class="eenheid">${nights === 1 ? "NIGHT" : "NIGHTS"}</span></div>`;
+  }
 }
 tik(); setInterval(tik, 1000);
 
-/* ---------- Vuur: particle-systeem (vlammen, vonken, rook) ---------- */
+/* ---------- Fire: particle system (flames, sparks, smoke) ---------- */
 const fc = $("vuur"), fx = fc.getContext("2d");
 let FW = 1, FH = 1, vlam = [], vonk = [], rook = [], t = 0, accF = 0, accS = 0, accR = 0;
 function maatVuur() {
@@ -299,14 +318,14 @@ function maatVuur() {
   FW = fc.clientWidth || 1; FH = fc.clientHeight || 1;
   fc.width = FW * d; fc.height = FH * d; fx.setTransform(d, 0, 0, d, 0, 0);
 }
-// Zachte gloeiende bolletjes, eenmalig voorgerenderd (goedkoop tekenen met drawImage)
+// Soft glowing sprites, pre-rendered once for efficient drawing
 function sprite(rgb) {
   const c = document.createElement("canvas"); c.width = c.height = 64;
   const g = c.getContext("2d"), r = g.createRadialGradient(32, 32, 0, 32, 32, 32);
   r.addColorStop(0, `rgba(${rgb},1)`); r.addColorStop(.4, `rgba(${rgb},.45)`); r.addColorStop(1, `rgba(${rgb},0)`);
   g.fillStyle = r; g.fillRect(0, 0, 64, 64); return c;
 }
-const KLEUR = [sprite("255,244,200"), sprite("255,150,40"), sprite("210,45,10")]; // kern, midden, rand
+const KLEUR = [sprite("255,244,200"), sprite("255,150,40"), sprite("210,45,10")]; // core, middle, edge
 const ROOK = sprite("125,115,110");
 const rnd = Math.random;
 
@@ -319,7 +338,7 @@ function stap(dt) {
     const p = lijst[i]; p.l += dt;
     if (p.l >= p.m) { lijst[i] = lijst[lijst.length - 1]; lijst.pop(); continue; }
     p.y += p.vy * dt;
-    if (lijst === vlam) p.x += ((FW / 2 - p.x) * .9 + Math.sin(t * 7 + p.p) * FW * .07) * dt;   // vlammen trekken naar het midden
+    if (lijst === vlam) p.x += ((FW / 2 - p.x) * .9 + Math.sin(t * 7 + p.p) * FW * .07) * dt;   // flames drift towards the centre
     else if (lijst === vonk) { p.vy *= 1 - .15 * dt; p.x += (p.vx + Math.sin(t * 4 + p.p) * FW * .1) * dt; }
     else { p.x += Math.sin(t + p.p) * FW * .03 * dt; p.s += FW * .05 * dt; }
   }
@@ -329,7 +348,7 @@ function teken(f) {
   fx.globalCompositeOperation = "source-over"; fx.globalAlpha = 1;
   for (const p of rook) { const a = p.l / p.m; fx.globalAlpha = Math.sin(a * 3.14) * .09; fx.drawImage(ROOK, p.x - p.s, p.y - p.s, p.s * 2, p.s * 2); }
   fx.globalCompositeOperation = "lighter";
-  // gloeiend sintelbed onderin
+  // glowing embers at the bottom
   const g = fx.createRadialGradient(FW / 2, FH * .92, 0, FW / 2, FH * .92, FW * .5);
   g.addColorStop(0, `rgba(255,120,30,${.55 * f})`); g.addColorStop(1, "rgba(255,60,10,0)");
   fx.globalAlpha = 1; fx.fillStyle = g; fx.fillRect(0, FH * .5, FW, FH * .5);
@@ -342,20 +361,20 @@ function teken(f) {
   for (const p of vonk) { fx.globalAlpha = 1 - p.l / p.m; fx.fillRect(p.x, p.y, 1.8, 1.8); }
   fx.globalAlpha = 1; fx.globalCompositeOperation = "source-over";
 }
-// Flikkering: som van sinussen + toeval, stuurt gloed op muur, stenen en sintels
+// Flicker drives the glow on the wall, bricks and embers
 let f = .8;
 function flikker() { const n = (Math.sin(t * 7.1) + Math.sin(t * 11.3 + 1) + Math.sin(t * 3.7 + 2)) / 6 + .5; f = Math.min(1, Math.max(.55, .62 + n * .38 + (rnd() - .5) * .08)); root.style.setProperty("--f", f.toFixed(3)); }
 
 let vuurRaf = 0, laatste = 0;
 function lus(ts) { const dt = Math.min((ts - laatste) / 1000, .05); laatste = ts; stap(dt); flikker(); teken(); vuurRaf = requestAnimationFrame(lus); }
 function startVuur() { if (reduce || vuurRaf) return; laatste = performance.now(); vuurRaf = requestAnimationFrame(lus); }
-// Eerste (stilstaande) beeld vóór de klik, en vast beeld bij prefers-reduced-motion
+// Initial still frame before interaction; respect reduced-motion preference
 maatVuur(); for (let i = 0; i < 90; i++) stap(1 / 30); flikker(); teken();
 
-/* ---------- Sneeuw ---------- */
+/* ---------- Snow ---------- */
 const sc = $("sneeuw"), sx = sc.getContext("2d"); let SW, SH, vlokken = [], sneeuwRaf = 0;
 function maatSneeuw() { const d = Math.min(devicePixelRatio || 1, 2); SW = innerWidth; SH = innerHeight; sc.width = SW * d; sc.height = SH * d; sx.setTransform(d, 0, 0, d, 0, 0);
-  vlokken = Array.from({ length: Math.min(MAX_SNEEUW, Math.round(SW * SH / 20000)) }, () => ({ x: rnd() * SW, y: rnd() * SH, r: rnd() * 2 + .7, v: rnd() * .7 + .35, f: rnd() * 6.28 })); }
+  vlokken = Array.from({ length: Math.min(MAX_SNOWFLAKES, Math.round(SW * SH / 20000)) }, () => ({ x: rnd() * SW, y: rnd() * SH, r: rnd() * 2 + .7, v: rnd() * .7 + .35, f: rnd() * 6.28 })); }
 function sneeuwLus() {
   sx.clearRect(0, 0, SW, SH); sx.fillStyle = "rgba(255,255,255,.8)";
   for (const v of vlokken) { v.y += v.v; v.f += .01; v.x += Math.sin(v.f) * .35; if (v.y > SH + 4) { v.y = -4; v.x = rnd() * SW; } sx.beginPath(); sx.arc(v.x, v.y, v.r, 0, 6.283); sx.fill(); }
@@ -363,18 +382,18 @@ function sneeuwLus() {
 }
 maatSneeuw();
 addEventListener("resize", () => { maatVuur(); maatSneeuw(); });
-document.addEventListener("visibilitychange", () => {   // niets tekenen als het tabblad verborgen is
+document.addEventListener("visibilitychange", () => {   // stop drawing while the tab is hidden
   if (document.hidden) { cancelAnimationFrame(vuurRaf); cancelAnimationFrame(sneeuwRaf); vuurRaf = sneeuwRaf = 0; }
   else if (gestart) { startVuur(); if (!reduce && !sneeuwRaf) sneeuwLus(); }
 });
 
-/* ---------- Echt haardgeluid: externe CC0-opname ---------- */
+/* ---------- Fireplace sound: external recording ---------- */
 const fireAudio = $("fireAudio"); let vuurAan = false;
 fireAudio.volume = parseFloat($("vuurVol").value);
 function zetVuurGeluid(aan) {
   vuurAan = aan; $("vuurKnop").setAttribute("aria-pressed", String(aan));
-  $("vuurKnop").textContent = aan ? "Haardgeluid aan" : "Haardgeluid uit";
-  if (aan) fireAudio.play().catch(() => { $("vuurKnop").textContent = "Tik om haardgeluid te starten"; });
+  $("vuurKnop").textContent = aan ? "Fireplace sound on" : "Fireplace sound off";
+  if (aan) fireAudio.play().catch(() => { $("vuurKnop").textContent = "Tap to start fireplace sound"; });
   else fireAudio.pause();
 }
 $("vuurKnop").addEventListener("click", () => zetVuurGeluid(!vuurAan));
@@ -387,24 +406,24 @@ audio.volume = parseFloat($("radioVol").value);
 $("radioVol").addEventListener("input", e => audio.volume = parseFloat(e.target.value));
 function icoon(speelt) {
   $("icoon").setAttribute("d", speelt ? "M6 4.5h4.2v15H6zM13.8 4.5H18v15h-4.2z" : "M7 4.5v15l13-7.5z");
-  speel.setAttribute("aria-label", speelt ? "Pauzeer de radio" : "Speel de radio af");
+  speel.setAttribute("aria-label", speelt ? "Pause the radio" : "Play the radio");
 }
-function toonFout() { $("fout").hidden = false; status("", "Geen verbinding"); icoon(false); audio.removeAttribute("src"); }
+function toonFout() { $("fout").hidden = false; status("", "Connection unavailable"); icoon(false); audio.removeAttribute("src"); }
 async function afspelen() {
-  $("fout").hidden = true; status("laden", "Nu aan het laden…");
+  $("fout").hidden = true; status("laden", "Loading…");
   if (!audio.getAttribute("src")) audio.src = STREAM_URL;
   try { await audio.play(); } catch (e) { if (e.name !== "AbortError") toonFout(); }
 }
 audio.addEventListener("playing", () => { status("live", "LIVE"); icoon(true); });
-audio.addEventListener("waiting", () => { if (!audio.paused) status("laden", "Bufferen…"); });
-audio.addEventListener("pause",   () => { status("", "Gepauzeerd"); icoon(false); });
+audio.addEventListener("waiting", () => { if (!audio.paused) status("laden", "Buffering…"); });
+audio.addEventListener("pause",   () => { status("", "Paused"); icoon(false); });
 audio.addEventListener("error",   toonFout);
 $("opnieuw").addEventListener("click", afspelen);
 const wissel = () => audio.paused ? afspelen() : audio.pause();
 speel.addEventListener("click", wissel);
 document.addEventListener("keydown", e => { if (e.code === "Space" && gestart && !e.target.closest("button, input")) { e.preventDefault(); wissel(); } });
 
-/* ---------- Startknop: radio, vuurgeluid en animatie tegelijk ---------- */
+/* ---------- Start button ---------- */
 $("startKnop").addEventListener("click", () => {
   gestart = true; $("start").classList.add("weg");
   startVuur(); if (!reduce) sneeuwLus();
